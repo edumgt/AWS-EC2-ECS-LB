@@ -107,6 +107,7 @@ aws ec2 create-subnet --vpc-id vpc-0ecdd43bad4b17796 --cidr-block 10.0.2.0/24 --
 
 ## 구성확인
 ![alt text](image-13.png)
+![alt text](image-17.png)
 
 ## 인터넷 게이트웨이 구성
 aws ec2 create-internet-gateway

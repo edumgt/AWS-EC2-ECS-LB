@@ -1,6 +1,6 @@
 {
   "ImageId": "ami-0d3fb6fb6c746f131",
   "InstanceType": "t3.micro",
-  "SecurityGroupIds": ["sg-07a03565"],
+  "SecurityGroupIds": ["sg-098feef73ffc423f0"],
   "KeyName": "EC2-Auto-Key"
 }
