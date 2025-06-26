@@ -215,7 +215,8 @@ CIDR	IP 주소 + 서브넷 마스크를 간단하게 표기하는 방식 (192.16
 ## 템플릿으로 시작
 ![alt text](image-86.png)
 
-
+## 책의 stress 테스트 및 이미지와 같이 SNS noti 확인
+![alt text](image-87.png)
 
 
 
