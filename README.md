@@ -207,6 +207,14 @@ CIDR	IP 주소 + 서브넷 마스크를 간단하게 표기하는 방식 (192.16
 ![alt text](image-82.png)
 
 
+## 시작 템플릿 수정
+![alt text](image-83.png)
+## 템플릿 선택 후 작업 클릭
+![alt text](image-84.png)
+
+## 템플릿으로 시작
+![alt text](image-86.png)
+
 
 
 
