@@ -1,5 +1,23 @@
+## nginx 실행 되는 vm 생성
+## Ubuntu 기준 설치 방법
+## 아래 명령에서 root 접속의 경우 sudo 생략
+sudo apt update
+sudo apt install nginx -y
+## nginx 실행
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo systemctl status nginx
+## 자동 실행
+sudo systemctl enable nginx
+## 자동 실행 확인
+systemctl is-enabled nginx
+
+## AMI 로 만듭니다. 또는 다음을 공유
+
+
 ## AMI 퍼블릭 공유
-ami-0594aa3b1a9017b0a
+ami-0594aa3b1a9017b0a -> nginx 없는 ubuntu 버젼
+ami-0c67b4bab87213208 -> nginx 설치 버젼
 
 ## AMI 공유를 위한 설정 변경
 ![alt text](image-88.png)
@@ -237,3 +255,107 @@ AWS 로드 밸런서에서 말하는 "기본 라우팅(기본 전달 대상, Def
 PS C:\edumgt-java-education\AWS_EC2_AUTO> ssh -i "MyNginXKey.pem" root@ec2-3-36-229-4.ap-northeast-2.compute.amazonaws.com
 ssh: connect to host ec2-3-36-229-4.ap-northeast-2.compute.amazonaws.com port 22: Connection timed out
 
+## 지금까지 nginx 없는 버젼으로 했다면, nginx 있는 버젼 동일 테스트
+![alt text](image-143.png)
+
+## 시작 템플릿 버젼 3로 변경 - AMI 도 MyRealNginx 로 변경
+## 나머지 동일
+## 위에서 작업한 내용과 동일하게 기본 버젼 설정 - 3 버젼으로
+![alt text](image-144.png)
+![alt text](image-145.png)
+## 자동 생성 하는데, 설정 시간차이로 nginx 설치 버젼 확인이 애매함.
+## 재차 서버 삭제 또는 Auto Scaling 에서 재설정
+## 인스턴스 새로고침
+![alt text](image-146.png)
+## 위에서 재정의 클릭
+## 서버 재기동으로 남는 탄력 IP 재 배정 - 접속 안되는 문제는 VPC 생성 시 또 다른 네트웍 적인 설정 이슈가 있을 수 있음
+![alt text](image-147.png)
+
+## Origin 명칭의 nginx 설치 버젼 별도 인스탄스의 80 포트 nginx 실행 여부 확인
+![alt text](image-148.png)
+
+## 자동 생성된 VM 에 탄력적 IP 적용 하였으나, 
+http://ec2-3-36-229-4.ap-northeast-2.compute.amazonaws.com/ 으로 접속 안될 수 있음.
+
+## 로드밸런서 확인
+nginx 미설치 vm 에서 오류 났던 80 포트의 데몬 un-healthy 부분 -> healthy 로 변경 확인
+![alt text](image-149.png)
+
+
+## 아래의 로드밸런서 주소로 80 포트 리스너 역할로 nginx 서버의 화면 보이면 정상.. 다른 문제 있는듯, 차차 해결 필요
+![alt text](image-150.png)
+
+
+## 복잡한 설정으로 AWS CLI 로 확인
+aws elbv2 describe-load-balancers `
+  --names Auto-0701-1 `
+  --query "LoadBalancers[*].AvailabilityZones[*].SubnetId"
+
+PS C:\edumgt-java-education\AWS_EC2_AUTO> aws elbv2 describe-load-balancers `
+>>   --names Auto-0701-1 `
+>>   --query "LoadBalancers[*].AvailabilityZones[*].SubnetId"
+
+An error occurred (AccessDenied) when calling the DescribeLoadBalancers operation: User: arn:aws:iam::086015456585:user/ErrorUser is not authorized to perform: elasticloadbalancing:DescribeLoadBalancers because no identity-based policy allows the elasticloadbalancing:DescribeLoadBalancers action
+
+## 여러가지 복잡한 설정으로 Super 계정 사용
+![alt text](image-153.png)
+
+![alt text](image-151.png)
+
+aws ec2 describe-route-tables `
+  --filters "Name=association.subnet-id,Values=subnet-05397f40a85bc1199" `
+  --query "RouteTables[].Routes"
+
+
+## aws ec2 create-internet-gateway
+
+## 확인
+aws ec2 attach-internet-gateway `
+  --internet-gateway-id igw-01043c9154e16e030 `
+  --vpc-id vpc-0ae7f949e716d1e2d
+
+aws ec2 create-route `
+  --route-table-id rtb-039d950117b4dd696 `
+  --destination-cidr-block 0.0.0.0/0 `
+  --gateway-id igw-01043c9154e16e030
+
+## load balancer 로 접속
+![alt text](image-152.png)
+
+## 지금까지 ALB 접속 문제 정리
+## ALB를 외부에서 접근 가능하게 만들기 위한 퍼블릭 서브넷 설정 필요
+## ALB는 EC2 대상 그룹의 80포트를 healthy로 인식하고 있음
+1. nginx 데몬 자체 실행이 없음 - nginx 실행 AMI 생성 후 템플릿 버젼 수정
+
+## ALB 를 퍼블릭한 서브넷, 인터넷게이트웨이, 라우팅 테이블 설정으로 변경
+조치 내용 (퍼블릭 서브넷으로 전환)
+
+1. Internet Gateway(IGW) 확인
+이미 IGW(igw-01043c9154e16e030)는 VPC(vpc-0ae7f949e716d1e2d)에 연결되어 있었음
+→ AlreadyAssociated 오류로 확인
+
+2. ALB 서브넷의 라우팅 테이블 확인
+서브넷 ID: subnet-05397f40a85bc1199, subnet-0e48cd9d5f1ffe49e
+라우팅 테이블: rtb-039d950117b4dd696 → IGW로 나가는 경로가 없음
+
+3. 라우팅 테이블에 퍼블릭 경로 추가
+aws ec2 create-route `
+  --route-table-id rtb-039d950117b4dd696 `
+  --destination-cidr-block 0.0.0.0/0 `
+  --gateway-id igw-01043c9154e16e030
+결과: { "Return": true } → 성공적으로 퍼블릭 서브넷으로 전환됨
+
+## 체크 항목
+| 항목                 | 상태                   |
+| ------------------ | -------------------- |
+| IGW 생성 및 연결        | ✅ 이미 연결됨             |
+| 라우팅 테이블에 IGW 경로 추가 | ✅ 완료                 |
+| ALB가 퍼블릭 서브넷에 있음   | ✅ 됨                  |
+| 외부 접근 가능성          | ✅ ALB DNS로 접속 가능해야 함 |
+
+
+## 다이어그램
+![alt text](image-154.png)
+
+## 사용 유저 계정 원복.
+![alt text](image-155.png)
