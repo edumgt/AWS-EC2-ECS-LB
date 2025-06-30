@@ -15,4 +15,3 @@ edumgt-key
 /n*
 *.csv
 .env
-*.pem
