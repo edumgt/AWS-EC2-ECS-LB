@@ -1,0 +1,16 @@
+aws elbv2 describe-load-balancers --names auto-nginx-0002-1 --query "LoadBalancers[].AvailabilityZones[].SubnetId"
+
+aws ec2 describe-subnets `
+  --subnet-ids subnet-05563a17284868562 subnet-0ea23329565940ce3 `
+  --query "Subnets[].{SubnetId:SubnetId, AZ:AvailabilityZone}" `
+  --output table
+
+aws ec2 describe-route-tables `
+  --filters Name=association.subnet-id,Values=subnet-05563a17284868562,subnet-0ea23329565940ce3 `
+  --query "RouteTables[].Routes[?GatewayId!=null].GatewayId"
+
+
+aws ec2 describe-security-groups `
+  --group-ids sg-08e25c044c1977682 `
+  --query "SecurityGroups[0].{GroupName:GroupName, GroupId:GroupId, VpcId:VpcId, Inbound:IpPermissions, Outbound:IpPermissionsEgress}" `
+  --output json
