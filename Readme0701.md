@@ -13,7 +13,7 @@ sudo systemctl enable nginx
 systemctl is-enabled nginx
 
 ## AMI 로 만듭니다. 또는 다음을 공유
-
+![alt text](image-156.png)
 
 ## AMI 퍼블릭 공유
 ami-0594aa3b1a9017b0a -> nginx 없는 ubuntu 버젼
