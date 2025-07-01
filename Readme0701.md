@@ -4,6 +4,9 @@
 sudo apt update
 sudo apt install nginx -y
 ## nginx 실행
+## Linux에서 systemd 시스템 및 서비스 매니저를 제어하는 명령어입니다.
+주로 서비스 시작/중지, 상태 확인, 부팅 시 자동 실행 설정 등을 할 때 사용합니다.
+
 sudo systemctl start nginx
 sudo systemctl enable nginx
 sudo systemctl status nginx
