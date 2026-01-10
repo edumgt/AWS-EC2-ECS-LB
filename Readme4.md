@@ -1,3 +1,9 @@
+# AWS EC2 Auto - 운영 점검 및 스트레스 테스트
+
+## 개요
+- SSH 접속/보안그룹 점검과 Nginx 재설치 과정을 캡처와 함께 정리했습니다.
+- 스트레스 테스트용 Launch Template 생성 예시를 포함했습니다.
+
 ## ssh -i "EC2-Auto-Key.pem" root@13.125.106.36
 ## 서버 접속이 안되어 SG 확인
 ![alt text](image-27.png)

@@ -1,6 +1,8 @@
-## 0630 수업
+# AWS EC2 Auto - 0630 수업 정리
 
-# AWS_EC2_AUTO
+## 개요
+- 콘솔 기반 Auto Scaling/ALB 구성 절차와 네트워크 설정을 단계별로 정리했습니다.
+- CLI로 AMI/템플릿/ASG를 만드는 시나리오와 오류 대응 과정을 함께 포함했습니다.
 
 ## console 위주의 작업
 ![alt text](image-30.png)
@@ -308,4 +310,3 @@ An error occurred (UnauthorizedOperation) when calling the RunInstances operatio
                     ... 이하 생략 ...
 ## VM 생성 확인
 ![alt text](image-8.png)
-
