@@ -1,3 +1,9 @@
+# AWS EC2 Auto - CLI 기반 구성 기록
+
+## 개요
+- AMI 생성부터 Launch Template, VPC/서브넷 구성까지 CLI 중심으로 정리했습니다.
+- 콘솔 캡처와 함께 주요 흐름을 단계별로 확인할 수 있습니다.
+
 ## AMI 생성
 ## 생성 대상 Instance ID - AMI ID 가 아닙니다. 
 ![alt text](image-9.png)
@@ -129,4 +135,3 @@ aws ec2 attach-internet-gateway --internet-gateway-id igw-027334beabf4ebda5 --vp
 
 ## 매핑 상태
 ![alt text](image-15.png)
-

@@ -1,3 +1,9 @@
+# AWS EC2 Auto - 0702 Spring Boot 준비
+
+## 개요
+- 기존 AMI에 Spring Boot를 올리기 위한 JDK/FTP 설정 절차를 정리했습니다.
+- 명령어 중심으로 기록되어 있어 단계별로 실행하면 됩니다.
+
 ## AMI 에 Spring Boot 올리기 위한 작업
 ## 기존 AMI 중 Nginx 미설치 AMI 인스탄스 생성
 ## sudo apt update
@@ -25,4 +31,3 @@ write_enable=YES
 ftpuser0001
 
 ## java -jar ./app.jar
-
