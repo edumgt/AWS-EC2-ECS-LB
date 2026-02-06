@@ -1,6 +1,16 @@
+# AWS EC2 Auto Scaling/ALB 구성 가이드
+
 ## 개요
 - 콘솔 기반 Auto Scaling/ALB 구성 절차와 네트워크 설정을 단계별로 정리했습니다.
 - CLI로 AMI/템플릿/ASG를 만드는 시나리오와 오류 대응 과정을 함께 포함했습니다.
+- 보안상 민감할 수 있는 리소스 ID/계정 정보는 마스킹 처리했습니다.
+
+## 작업 흐름 요약
+1. AMI 생성 및 시작 템플릿 구성
+2. Auto Scaling 그룹 생성
+3. 로드 밸런서 및 네트워크 설정
+4. 서브넷/VPC 구성 보완
+5. 용량, 알림, 태그 정책 검토
 
 ## console 위주의 작업
 ![alt text](image-30.png)
@@ -245,14 +255,14 @@ CIDR	IP 주소 + 서브넷 마스크를 간단하게 표기하는 방식 (192.16
 ## EC2 1대 생성 + nginx 설치
 # 1. EC2 생성
 aws ec2 run-instances `
-  --image-id ami-0c9c942bd7bf113a2 `
+  --image-id ami-xxxxxxxx `
   --instance-type t3.micro `
   --key-name EC2-Auto-Key `
-  --security-group-ids sg-07a03565 `
+  --security-group-ids sg-xxxxxxxx `
   --user-data file://nginx-setup.sh
 
 ## Error
-An error occurred (UnauthorizedOperation) when calling the RunInstances operation: You are not authorized to perform this operation. User: arn:aws:iam::086015456585:user/DevUser0002 is not authorized to perform: ec2:RunInstances on resource: arn:aws:ec2:ap-northeast-2:086015456585:instance/* because no identity-based policy allows the ec2:RunInstances action. 
+An error occurred (UnauthorizedOperation) when calling the RunInstances operation: You are not authorized to perform this operation. User: arn:aws:iam::<ACCOUNT_ID>:user/DevUser0002 is not authorized to perform: ec2:RunInstances on resource: arn:aws:ec2:ap-northeast-2:<ACCOUNT_ID>:instance/* because no identity-based policy allows the ec2:RunInstances action. 
 
 ## 위의 에러 발생 시
 ![alt text](image-3.png)
@@ -271,7 +281,7 @@ An error occurred (UnauthorizedOperation) when calling the RunInstances operatio
 ## VM 생성 확인
 {
     "ReservationId": "r-0f7e31d193251855a",
-    "OwnerId": "086015456585",
+    "OwnerId": "<ACCOUNT_ID>",
     "Groups": [],
     "Instances": [
         {
@@ -294,16 +304,16 @@ An error occurred (UnauthorizedOperation) when calling the RunInstances operatio
                     "Description": "",
                     "Groups": [
                         {
-                            "GroupId": "sg-07a03565",
+                            "GroupId": "sg-xxxxxxxx",
                             "GroupName": "default"
                         }
                     ],
                     "Ipv6Addresses": [],
                     "MacAddress": "0a:24:97:37:60:41",
-                    "NetworkInterfaceId": "eni-0c969969db6f930f5",
-                    "OwnerId": "086015456585",
+                    "NetworkInterfaceId": "eni-xxxxxxxx",
+                    "OwnerId": "<ACCOUNT_ID>",
                     "PrivateDnsName": "ip-172-31-47-28.ap-northeast-2.compute.internal",
-                    "PrivateIpAddress": "172.31.47.28",
+                    "PrivateIpAddress": "<PRIVATE_IP>",
 
                     ... 이하 생략 ...
 ## VM 생성 확인
