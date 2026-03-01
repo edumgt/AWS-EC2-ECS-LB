@@ -1,0 +1,130 @@
+---
+- name: Deploy ECS service via AWS CLI
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    image_tag: "{{ lookup('env', 'IMAGE_TAG') | default(lookup('pipe', 'date +%Y%m%d%H%M%S'), true) }}"
+
+  pre_tasks:
+    - name: Validate required vars
+      ansible.builtin.assert:
+        that:
+          - aws_region is defined
+          - ecs_cluster is defined
+          - ecs_service is defined
+          - task_family is defined
+          - ecr_repo is defined
+          - container_name is defined
+          - app_dir is defined
+        fail_msg: "Required variables are missing. Check group_vars/all.yml"
+
+    - name: Get AWS account ID
+      ansible.builtin.command: aws sts get-caller-identity --query Account --output text
+      register: aws_account_id_cmd
+      changed_when: false
+
+    - name: Set computed vars
+      ansible.builtin.set_fact:
+        aws_account_id: "{{ aws_account_id_cmd.stdout }}"
+        ecr_registry: "{{ aws_account_id_cmd.stdout }}.dkr.ecr.{{ aws_region }}.amazonaws.com"
+        image_uri: "{{ aws_account_id_cmd.stdout }}.dkr.ecr.{{ aws_region }}.amazonaws.com/{{ ecr_repo }}:{{ image_tag }}"
+        execution_role_arn_effective: "{{ execution_role_arn | default('arn:aws:iam::' ~ aws_account_id_cmd.stdout ~ ':role/ecsTaskExecutionRole') }}"
+
+  tasks:
+    - name: Ensure ECR repository exists
+      ansible.builtin.shell: |
+        aws ecr describe-repositories --repository-names "{{ ecr_repo }}" --region "{{ aws_region }}" >/dev/null 2>&1 || \
+        aws ecr create-repository --repository-name "{{ ecr_repo }}" --image-scanning-configuration scanOnPush=true --region "{{ aws_region }}"
+      changed_when: true
+
+    - name: Login to ECR
+      ansible.builtin.shell: |
+        aws ecr get-login-password --region "{{ aws_region }}" | \
+        docker login --username AWS --password-stdin "{{ ecr_registry }}"
+      changed_when: true
+
+    - name: Build image
+      ansible.builtin.command: docker build -t {{ ecr_repo }}:{{ image_tag }} {{ app_dir }}
+      changed_when: true
+
+    - name: Tag image
+      ansible.builtin.command: docker tag {{ ecr_repo }}:{{ image_tag }} {{ image_uri }}
+      changed_when: true
+
+    - name: Push image
+      ansible.builtin.command: docker push {{ image_uri }}
+      changed_when: true
+
+    - name: Render task definition file
+      ansible.builtin.copy:
+        dest: /tmp/taskdef-{{ task_family }}.json
+        mode: '0644'
+        content: |
+          {
+            "family": "{{ task_family }}",
+            "networkMode": "awsvpc",
+            "requiresCompatibilities": ["FARGATE"],
+            "cpu": "{{ cpu }}",
+            "memory": "{{ memory }}",
+            "executionRoleArn": "{{ execution_role_arn_effective }}",
+            {% if task_role_arn is defined and task_role_arn | length > 0 %}
+            "taskRoleArn": "{{ task_role_arn }}",
+            {% endif %}
+            "containerDefinitions": [
+              {
+                "name": "{{ container_name }}",
+                "image": "{{ image_uri }}",
+                "essential": true,
+                "portMappings": [
+                  {
+                    "containerPort": {{ container_port }},
+                    "protocol": "tcp"
+                  }
+                ],
+                "logConfiguration": {
+                  "logDriver": "awslogs",
+                  "options": {
+                    "awslogs-group": "/ecs/{{ ecs_service }}",
+                    "awslogs-region": "{{ aws_region }}",
+                    "awslogs-stream-prefix": "ecs"
+                  }
+                }
+              }
+            ]
+          }
+
+    - name: Register task definition
+      ansible.builtin.command: >
+        aws ecs register-task-definition
+        --region {{ aws_region }}
+        --cli-input-json file:///tmp/taskdef-{{ task_family }}.json
+        --query taskDefinition.taskDefinitionArn
+        --output text
+      register: task_def_arn_cmd
+      changed_when: true
+
+    - name: Update ECS service
+      ansible.builtin.command: >
+        aws ecs update-service
+        --region {{ aws_region }}
+        --cluster {{ ecs_cluster }}
+        --service {{ ecs_service }}
+        --task-definition {{ task_def_arn_cmd.stdout }}
+        --force-new-deployment
+      changed_when: true
+
+    - name: Wait service stable
+      ansible.builtin.command: >
+        aws ecs wait services-stable
+        --region {{ aws_region }}
+        --cluster {{ ecs_cluster }}
+        --services {{ ecs_service }}
+      changed_when: false
+
+    - name: Print deploy summary
+      ansible.builtin.debug:
+        msg:
+          - "Image: {{ image_uri }}"
+          - "Task Definition ARN: {{ task_def_arn_cmd.stdout }}"

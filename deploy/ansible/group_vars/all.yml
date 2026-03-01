@@ -1,0 +1,15 @@
+# Required
+aws_region: ap-northeast-2
+ecs_cluster: study-fargate-cluster
+ecs_service: study-fargate-service
+task_family: study-fargate-task
+ecr_repo: be-fastapi-hello
+container_name: api
+app_dir: ./BE-fastapi
+
+# Optional
+container_port: 8000
+cpu: "256"
+memory: "512"
+# execution_role_arn: arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole
+# task_role_arn: arn:aws:iam::<ACCOUNT_ID>:role/yourTaskRole

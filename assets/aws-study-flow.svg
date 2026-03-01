@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="AWS Study Flow">
+  <defs>
+    <style>
+      .title { font: 700 34px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #0f172a; }
+      .node { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 14; ry: 14; }
+      .text { font: 600 20px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #0f172a; }
+      .arrow { stroke: #0f172a; stroke-width: 3; marker-end: url(#head); fill: none; }
+      .bg { fill: url(#grad); }
+    </style>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#fef9c3"/>
+    </linearGradient>
+    <marker id="head" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0f172a"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="720" class="bg"/>
+  <text x="60" y="70" class="title">AWS 학습 순서도 (Mermaid 흐름 기반)</text>
+
+  <rect x="70" y="130" width="280" height="90" class="node"/>
+  <text x="110" y="186" class="text">1. 요구사항 정의</text>
+
+  <rect x="420" y="130" width="360" height="90" class="node"/>
+  <text x="460" y="186" class="text">2. VPC/Subnet/Route 설계</text>
+
+  <rect x="840" y="130" width="360" height="90" class="node"/>
+  <text x="892" y="186" class="text">3. EC2/AMI/Template 준비</text>
+
+  <rect x="170" y="320" width="360" height="90" class="node"/>
+  <text x="225" y="376" class="text">4. ALB/Target Group 구성</text>
+
+  <rect x="590" y="320" width="300" height="90" class="node"/>
+  <text x="640" y="376" class="text">5. ASG 연동</text>
+
+  <rect x="950" y="320" width="250" height="90" class="node"/>
+  <text x="984" y="376" class="text">6. ECS Fargate</text>
+
+  <rect x="430" y="510" width="420" height="90" class="node"/>
+  <text x="482" y="566" class="text">7. CloudWatch 관측/롤백</text>
+
+  <path d="M350 175 L420 175" class="arrow"/>
+  <path d="M780 175 L840 175" class="arrow"/>
+  <path d="M1020 220 L1020 300" class="arrow"/>
+  <path d="M840 365 L950 365" class="arrow"/>
+  <path d="M530 365 L590 365" class="arrow"/>
+  <path d="M350 220 L350 300" class="arrow"/>
+  <path d="M740 410 L740 500" class="arrow"/>
+</svg>

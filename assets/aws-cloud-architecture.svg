@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-label="AWS Cloud Architecture">
+  <defs>
+    <style>
+      .title { font: 700 34px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #0f172a; }
+      .label { font: 600 19px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #0f172a; }
+      .small { font: 500 16px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #1e293b; }
+      .aws { fill: #fff7ed; stroke: #ea580c; stroke-width: 3; rx: 14; ry: 14; }
+      .vpc { fill: #f1f5f9; stroke: #334155; stroke-width: 2.5; rx: 14; ry: 14; }
+      .public { fill: #dcfce7; stroke: #16a34a; stroke-width: 2.5; rx: 12; ry: 12; }
+      .private { fill: #dbeafe; stroke: #2563eb; stroke-width: 2.5; rx: 12; ry: 12; }
+      .data { fill: #fae8ff; stroke: #a21caf; stroke-width: 2.5; rx: 12; ry: 12; }
+      .svc { fill: #fef3c7; stroke: #d97706; stroke-width: 2.5; rx: 12; ry: 12; }
+      .arrow { stroke: #0f172a; stroke-width: 3; marker-end: url(#head); fill: none; }
+      .bg { fill: url(#grad); }
+    </style>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#fef2f2"/>
+    </linearGradient>
+    <marker id="head" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0f172a"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="820" class="bg"/>
+  <text x="50" y="68" class="title">AWS EC2 + ECS(Fargate) + ALB 학습 아키텍처</text>
+
+  <rect x="40" y="140" width="1320" height="620" class="aws"/>
+  <text x="70" y="182" class="label">AWS Cloud (ap-northeast-2)</text>
+
+  <rect x="90" y="220" width="1220" height="500" class="vpc"/>
+  <text x="120" y="258" class="label">VPC (10.0.0.0/16)</text>
+
+  <rect x="130" y="290" width="560" height="190" class="public"/>
+  <text x="155" y="325" class="label">Public Subnets (AZ-a, AZ-c)</text>
+
+  <rect x="170" y="350" width="220" height="90" class="svc"/>
+  <text x="212" y="402" class="label">ALB</text>
+
+  <rect x="420" y="350" width="230" height="90" class="svc"/>
+  <text x="447" y="402" class="label">NAT Gateway</text>
+
+  <rect x="720" y="290" width="550" height="190" class="private"/>
+  <text x="748" y="325" class="label">Private Subnets (App Tier)</text>
+
+  <rect x="760" y="350" width="230" height="90" class="svc"/>
+  <text x="782" y="392" class="label">ECS Service</text>
+  <text x="786" y="416" class="small">(Fargate Tasks)</text>
+
+  <rect x="1020" y="350" width="210" height="90" class="svc"/>
+  <text x="1070" y="402" class="label">EC2 ASG</text>
+
+  <rect x="130" y="520" width="1140" height="160" class="data"/>
+  <text x="160" y="556" class="label">Supporting Services</text>
+
+  <rect x="190" y="575" width="220" height="70" class="svc"/>
+  <text x="258" y="620" class="label">Amazon ECR</text>
+
+  <rect x="460" y="575" width="280" height="70" class="svc"/>
+  <text x="516" y="620" class="label">CloudWatch Logs</text>
+
+  <rect x="790" y="575" width="210" height="70" class="svc"/>
+  <text x="840" y="620" class="label">IAM Role</text>
+
+  <rect x="1040" y="575" width="190" height="70" class="svc"/>
+  <text x="1088" y="620" class="label">S3</text>
+
+  <text x="55" y="114" class="small">Client → ALB → ECS(Fargate) / EC2 ASG, 이미지 공급: ECR, 모니터링: CloudWatch</text>
+
+  <path d="M390 395 L760 395" class="arrow"/>
+  <path d="M390 375 L1020 375" class="arrow"/>
+  <path d="M300 575 L300 445" class="arrow"/>
+  <path d="M600 575 L875 445" class="arrow"/>
+  <path d="M895 575 L895 445" class="arrow"/>
+</svg>
