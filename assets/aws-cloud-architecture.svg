@@ -1,75 +1,363 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-label="AWS Cloud Architecture">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1400" height="900" viewBox="0 0 1400 900"
+     role="img" aria-label="AWS Cloud Architecture: EC2 + ECS Fargate + ALB">
+
   <defs>
+    <!-- ── Font stack (includes Korean) ── -->
     <style>
-      .title { font: 700 34px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #0f172a; }
-      .label { font: 600 19px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #0f172a; }
-      .small { font: 500 16px 'Pretendard', 'Noto Sans KR', sans-serif; fill: #1e293b; }
-      .aws { fill: #fff7ed; stroke: #ea580c; stroke-width: 3; rx: 14; ry: 14; }
-      .vpc { fill: #f1f5f9; stroke: #334155; stroke-width: 2.5; rx: 14; ry: 14; }
-      .public { fill: #dcfce7; stroke: #16a34a; stroke-width: 2.5; rx: 12; ry: 12; }
-      .private { fill: #dbeafe; stroke: #2563eb; stroke-width: 2.5; rx: 12; ry: 12; }
-      .data { fill: #fae8ff; stroke: #a21caf; stroke-width: 2.5; rx: 12; ry: 12; }
-      .svc { fill: #fef3c7; stroke: #d97706; stroke-width: 2.5; rx: 12; ry: 12; }
-      .arrow { stroke: #0f172a; stroke-width: 3; marker-end: url(#head); fill: none; }
-      .bg { fill: url(#grad); }
+      svg text {
+        font-family: 'Amazon Ember', 'Apple SD Gothic Neo', 'Malgun Gothic',
+                     'Noto Sans KR', 'Helvetica Neue', Arial, sans-serif;
+      }
+      .t-title  { font-size:26px; font-weight:700; fill:#232F3E; }
+      .t-badge  { font-size:13px; font-weight:700; fill:white; }
+      .t-badge2 { font-size:12px; font-weight:600; fill:white; }
+      .t-zone-g { font-size:12px; font-weight:600; fill:#1D8102; }
+      .t-zone-b { font-size:12px; font-weight:600; fill:#0057B8; }
+      .t-zone-p { font-size:12px; font-weight:600; fill:#6B48C8; }
+      .t-net    { font-size:13px; font-weight:600; fill:#232F3E; }
+      .t-sub    { font-size:11px; fill:#546E7A; }
+      .t-arr-o  { font-size:11px; fill:#ED7100; }
+      .t-arr-p  { font-size:11px; fill:#8C4FFF; }
     </style>
-    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ecfeff"/>
-      <stop offset="100%" stop-color="#fef2f2"/>
-    </linearGradient>
-    <marker id="head" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 z" fill="#0f172a"/>
+
+    <!-- ── Arrowhead markers ── -->
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#546E7A"/>
     </marker>
+    <marker id="arr-o" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#ED7100"/>
+    </marker>
+    <marker id="arr-p" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#8C4FFF"/>
+    </marker>
+
+    <!-- ══════════════════════════════════════════════════════════
+         AWS SERVICE ICON SYMBOLS
+         Colors follow the official AWS Architecture Icon palette:
+           Networking  #8C4FFF  (purple)
+           Compute     #ED7100  (orange)
+           Containers  #ED7100  (orange)
+           Storage     #7AA116  (green)
+           Mgmt/Gov    #E7157B  (pink)
+           Security    #DD344C  (red)
+         ══════════════════════════════════════════════════════════ -->
+
+    <!-- Internet / Globe -->
+    <symbol id="ic-internet" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="28" fill="#E8F4FD" stroke="#147EBA" stroke-width="2.5"/>
+      <ellipse cx="32" cy="32" rx="28" ry="13" fill="none" stroke="#147EBA" stroke-width="1.5" opacity="0.7"/>
+      <line x1="32" y1="4"  x2="32" y2="60" stroke="#147EBA" stroke-width="1.5" opacity="0.7"/>
+      <line x1="4"  y1="32" x2="60" y2="32" stroke="#147EBA" stroke-width="1.5" opacity="0.7"/>
+      <!-- user silhouette overlay -->
+      <circle cx="32" cy="26" r="7" fill="#147EBA" opacity="0.85"/>
+      <path d="M18 46 C18 36 46 36 46 46" fill="#147EBA" opacity="0.85"/>
+    </symbol>
+
+    <!-- Application Load Balancer  (Networking – purple) -->
+    <symbol id="ic-alb" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#8C4FFF"/>
+      <!-- source dot -->
+      <circle cx="32" cy="13" r="4" fill="white"/>
+      <!-- three fan lines -->
+      <path d="M32 17 L14 34 M32 17 L32 34 M32 17 L50 34"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <!-- three target boxes -->
+      <rect x="8"  y="34" width="12" height="14" rx="3" fill="white" opacity="0.92"/>
+      <rect x="26" y="34" width="12" height="14" rx="3" fill="white" opacity="0.92"/>
+      <rect x="44" y="34" width="12" height="14" rx="3" fill="white" opacity="0.92"/>
+    </symbol>
+
+    <!-- NAT Gateway  (Networking – purple) -->
+    <symbol id="ic-natgw" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#8C4FFF"/>
+      <!-- horizontal channel -->
+      <rect x="8" y="24" width="48" height="16" rx="4" fill="white" opacity="0.85"/>
+      <!-- right-pointing arrowhead inside channel -->
+      <path d="M38 20 L56 32 L38 44"
+            stroke="white" stroke-width="3" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- Amazon EC2  (Compute – orange) -->
+    <symbol id="ic-ec2" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#ED7100"/>
+      <!-- three server bars -->
+      <rect x="12" y="14" width="40" height="9" rx="2" fill="white"/>
+      <circle cx="47" cy="18.5" r="2.5" fill="#ED7100"/>
+      <rect x="12" y="27" width="40" height="9" rx="2" fill="white"/>
+      <circle cx="47" cy="31.5" r="2.5" fill="#ED7100"/>
+      <rect x="12" y="40" width="40" height="9" rx="2" fill="white"/>
+      <circle cx="47" cy="44.5" r="2.5" fill="#ED7100"/>
+    </symbol>
+
+    <!-- Amazon ECS  (Containers – orange) -->
+    <symbol id="ic-ecs" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#ED7100"/>
+      <!-- 2×2 container grid -->
+      <rect x="9"  y="9"  width="20" height="20" rx="3" fill="white"/>
+      <rect x="35" y="9"  width="20" height="20" rx="3" fill="white"/>
+      <rect x="9"  y="35" width="20" height="20" rx="3" fill="white"/>
+      <rect x="35" y="35" width="20" height="20" rx="3" fill="white"/>
+    </symbol>
+
+    <!-- Amazon ECR  (Containers – orange, cylinder) -->
+    <symbol id="ic-ecr" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#ED7100"/>
+      <ellipse cx="32" cy="22" rx="16" ry="6"  fill="white"/>
+      <rect    x="16" y="22" width="32" height="22" fill="white"/>
+      <ellipse cx="32" cy="44" rx="16" ry="6"  fill="#FBE8CC"/>
+      <line x1="16" y1="30" x2="48" y2="30" stroke="#ED7100" stroke-width="1.5" opacity="0.35"/>
+      <line x1="16" y1="38" x2="48" y2="38" stroke="#ED7100" stroke-width="1.5" opacity="0.35"/>
+    </symbol>
+
+    <!-- Amazon CloudWatch  (Management – pink) -->
+    <symbol id="ic-cw" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#E7157B"/>
+      <!-- eye / lens shape -->
+      <path d="M8 27 Q20 14 32 27 Q44 40 56 27" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="32" cy="27" r="5" fill="white"/>
+      <circle cx="32" cy="27" r="2" fill="#E7157B"/>
+      <!-- trend line below -->
+      <polyline points="10,50 18,42 26,46 36,36 46,42 54,34"
+                stroke="white" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- AWS IAM  (Security – red, shield + lock) -->
+    <symbol id="ic-iam" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#DD344C"/>
+      <!-- shield outline -->
+      <path d="M32 8 L54 16 L54 34 C54 47 44 57 32 61 C20 57 10 47 10 34 L10 16 Z"
+            fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- lock body -->
+      <rect x="25" y="36" width="14" height="12" rx="2" fill="white"/>
+      <!-- lock shackle -->
+      <path d="M28 36 L28 30 C28 25 36 25 36 30 L36 36"
+            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Amazon S3  (Storage – green, bucket) -->
+    <symbol id="ic-s3" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="#7AA116"/>
+      <!-- bucket body -->
+      <path d="M18 26 L46 26 L42 52 L22 52 Z" fill="white"/>
+      <!-- bucket rim -->
+      <ellipse cx="32" cy="26" rx="14" ry="5.5" fill="white"/>
+      <ellipse cx="32" cy="26" rx="14" ry="5.5" fill="none" stroke="#7AA116" stroke-width="1.5"/>
+    </symbol>
+
   </defs>
 
-  <rect x="0" y="0" width="1400" height="820" class="bg"/>
-  <text x="50" y="68" class="title">AWS EC2 + ECS(Fargate) + ALB 학습 아키텍처</text>
+  <!-- ═══════════════════════════════════════════
+       BACKGROUND
+  ═══════════════════════════════════════════ -->
+  <rect width="1400" height="900" fill="#F2F3F3"/>
 
-  <rect x="40" y="140" width="1320" height="620" class="aws"/>
-  <text x="70" y="182" class="label">AWS Cloud (ap-northeast-2)</text>
+  <!-- ═══════════════════════════════════════════
+       TITLE
+  ═══════════════════════════════════════════ -->
+  <text x="700" y="44" text-anchor="middle"
+        class="t-title">
+    AWS EC2 + ECS(Fargate) + ALB 학습 아키텍처
+  </text>
 
-  <rect x="90" y="220" width="1220" height="500" class="vpc"/>
-  <text x="120" y="258" class="label">VPC (10.0.0.0/16)</text>
+  <!-- ═══════════════════════════════════════════
+       INTERNET / CLIENT  (outside AWS)
+  ═══════════════════════════════════════════ -->
+  <use href="#ic-internet" x="668" y="58" width="64" height="64"/>
+  <text x="700" y="140" text-anchor="middle"
+        class="t-net">
+    Internet / Client
+  </text>
 
-  <rect x="130" y="290" width="560" height="190" class="public"/>
-  <text x="155" y="325" class="label">Public Subnets (AZ-a, AZ-c)</text>
+  <!-- Internet → AWS Cloud entry arrow -->
+  <line x1="700" y1="147" x2="700" y2="172"
+        stroke="#546E7A" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect x="170" y="350" width="220" height="90" class="svc"/>
-  <text x="212" y="402" class="label">ALB</text>
+  <!-- ═══════════════════════════════════════════
+       AWS CLOUD BOUNDARY  (orange dashed)
+  ═══════════════════════════════════════════ -->
+  <rect x="50" y="178" width="1300" height="702" rx="14"
+        fill="#FFFBF2" stroke="#FF9900" stroke-width="2.5" stroke-dasharray="10,5"/>
+  <!-- badge -->
+  <rect x="50" y="170" width="242" height="26" rx="6" fill="#FF9900"/>
+  <text x="64" y="188"
+        class="t-badge">
+    AWS Cloud (ap-northeast-2)
+  </text>
 
-  <rect x="420" y="350" width="230" height="90" class="svc"/>
-  <text x="447" y="402" class="label">NAT Gateway</text>
+  <!-- ═══════════════════════════════════════════
+       VPC BOUNDARY  (navy solid)
+  ═══════════════════════════════════════════ -->
+  <rect x="75" y="208" width="1250" height="662" rx="10"
+        fill="none" stroke="#232F3E" stroke-width="2"/>
+  <!-- badge -->
+  <rect x="75" y="200" width="178" height="24" rx="5" fill="#232F3E"/>
+  <text x="88" y="217"
+        class="t-badge2">
+    VPC (10.0.0.0/16)
+  </text>
 
-  <rect x="720" y="290" width="550" height="190" class="private"/>
-  <text x="748" y="325" class="label">Private Subnets (App Tier)</text>
+  <!-- ═══════════════════════════════════════════
+       PUBLIC SUBNETS  (green)
+       y: 236 → 431   height: 195
+  ═══════════════════════════════════════════ -->
+  <rect x="100" y="236" width="1200" height="195" rx="8"
+        fill="#F0FFF4" stroke="#1D8102" stroke-width="1.5"/>
+  <text x="118" y="256"
+        class="t-zone-g">
+    Public Subnets  (ap-northeast-2a / ap-northeast-2c)
+  </text>
 
-  <rect x="760" y="350" width="230" height="90" class="svc"/>
-  <text x="782" y="392" class="label">ECS Service</text>
-  <text x="786" y="416" class="small">(Fargate Tasks)</text>
+  <!-- ALB  center (380, 306)  icon TL (348, 274) -->
+  <use href="#ic-alb" x="348" y="274" width="64" height="64"/>
+  <text x="380" y="353" text-anchor="middle"
+        class="t-net">
+    Application Load Balancer
+  </text>
+  <text x="380" y="368" text-anchor="middle"
+        class="t-sub">
+    (ALB)
+  </text>
 
-  <rect x="1020" y="350" width="210" height="90" class="svc"/>
-  <text x="1070" y="402" class="label">EC2 ASG</text>
+  <!-- NAT Gateway  center (980, 306)  icon TL (948, 274) -->
+  <use href="#ic-natgw" x="948" y="274" width="64" height="64"/>
+  <text x="980" y="353" text-anchor="middle"
+        class="t-net">
+    NAT Gateway
+  </text>
+  <text x="980" y="368" text-anchor="middle"
+        class="t-sub">
+    (Outbound)
+  </text>
 
-  <rect x="130" y="520" width="1140" height="160" class="data"/>
-  <text x="160" y="556" class="label">Supporting Services</text>
+  <!-- ═══════════════════════════════════════════
+       PRIVATE SUBNETS  (blue)
+       y: 448 → 643   height: 195
+  ═══════════════════════════════════════════ -->
+  <rect x="100" y="448" width="1200" height="195" rx="8"
+        fill="#EEF3FF" stroke="#0057B8" stroke-width="1.5"/>
+  <text x="118" y="468"
+        class="t-zone-b">
+    Private Subnets — App Tier  (ap-northeast-2a / ap-northeast-2c)
+  </text>
 
-  <rect x="190" y="575" width="220" height="70" class="svc"/>
-  <text x="258" y="620" class="label">Amazon ECR</text>
+  <!-- ECS Fargate  center (380, 524)  icon TL (348, 492) -->
+  <use href="#ic-ecs" x="348" y="492" width="64" height="64"/>
+  <text x="380" y="571" text-anchor="middle"
+        class="t-net">
+    Amazon ECS
+  </text>
+  <text x="380" y="586" text-anchor="middle"
+        class="t-sub">
+    (Fargate Tasks)
+  </text>
 
-  <rect x="460" y="575" width="280" height="70" class="svc"/>
-  <text x="516" y="620" class="label">CloudWatch Logs</text>
+  <!-- EC2 ASG  center (980, 524)  icon TL (948, 492) -->
+  <use href="#ic-ec2" x="948" y="492" width="64" height="64"/>
+  <text x="980" y="571" text-anchor="middle"
+        class="t-net">
+    Amazon EC2
+  </text>
+  <text x="980" y="586" text-anchor="middle"
+        class="t-sub">
+    (Auto Scaling Group)
+  </text>
 
-  <rect x="790" y="575" width="210" height="70" class="svc"/>
-  <text x="840" y="620" class="label">IAM Role</text>
+  <!-- ═══════════════════════════════════════════
+       SUPPORTING SERVICES  (light purple)
+       y: 660 → 848   height: 188
+  ═══════════════════════════════════════════ -->
+  <rect x="100" y="660" width="1200" height="188" rx="8"
+        fill="#F5F0FF" stroke="#6B48C8" stroke-width="1.5"/>
+  <text x="118" y="680"
+        class="t-zone-p">
+    Supporting Services
+  </text>
 
-  <rect x="1040" y="575" width="190" height="70" class="svc"/>
-  <text x="1088" y="620" class="label">S3</text>
+  <!-- ECR  center (250, 742)  icon TL (218, 710) -->
+  <use href="#ic-ecr" x="218" y="710" width="64" height="64"/>
+  <text x="250" y="789" text-anchor="middle"
+        class="t-net">
+    Amazon ECR
+  </text>
+  <text x="250" y="804" text-anchor="middle"
+        class="t-sub">
+    (Container Registry)
+  </text>
 
-  <text x="55" y="114" class="small">Client → ALB → ECS(Fargate) / EC2 ASG, 이미지 공급: ECR, 모니터링: CloudWatch</text>
+  <!-- CloudWatch  center (550, 742)  icon TL (518, 710) -->
+  <use href="#ic-cw" x="518" y="710" width="64" height="64"/>
+  <text x="550" y="789" text-anchor="middle"
+        class="t-net">
+    Amazon CloudWatch
+  </text>
+  <text x="550" y="804" text-anchor="middle"
+        class="t-sub">
+    (Monitoring / Logs)
+  </text>
 
-  <path d="M390 395 L760 395" class="arrow"/>
-  <path d="M390 375 L1020 375" class="arrow"/>
-  <path d="M300 575 L300 445" class="arrow"/>
-  <path d="M600 575 L875 445" class="arrow"/>
-  <path d="M895 575 L895 445" class="arrow"/>
+  <!-- IAM  center (850, 742)  icon TL (818, 710) -->
+  <use href="#ic-iam" x="818" y="710" width="64" height="64"/>
+  <text x="850" y="789" text-anchor="middle"
+        class="t-net">
+    AWS IAM
+  </text>
+  <text x="850" y="804" text-anchor="middle"
+        class="t-sub">
+    (Roles / Policies)
+  </text>
+
+  <!-- S3  center (1150, 742)  icon TL (1118, 710) -->
+  <use href="#ic-s3" x="1118" y="710" width="64" height="64"/>
+  <text x="1150" y="789" text-anchor="middle"
+        class="t-net">
+    Amazon S3
+  </text>
+  <text x="1150" y="804" text-anchor="middle"
+        class="t-sub">
+    (Logs / Artifacts)
+  </text>
+
+  <!-- ═══════════════════════════════════════════
+       CONNECTION ARROWS
+  ═══════════════════════════════════════════ -->
+
+  <!-- 1. Internet → ALB  (bezier curve, neutral gray) -->
+  <path d="M700 172 C700 214 380 214 380 274"
+        stroke="#546E7A" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+
+  <!-- 2. ALB → ECS Fargate  (straight down) -->
+  <line x1="380" y1="338" x2="380" y2="492"
+        stroke="#546E7A" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="394" y="420"
+        class="t-sub">
+    라우팅
+  </text>
+
+  <!-- 3. ALB → EC2 ASG  (right-margin L-route, neutral gray) -->
+  <path d="M412 306 L1262 306 L1262 524 L1012 524"
+        stroke="#546E7A" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <text x="1278" y="420" class="t-sub">라우팅</text>
+
+  <!-- 4. ECR → ECS Fargate  (orange dashed, container images) -->
+  <path d="M282 710 C282 640 380 640 380 556"
+        stroke="#ED7100" stroke-width="2" fill="none"
+        stroke-dasharray="6,4" marker-end="url(#arr-o)"/>
+  <text x="310" y="648"
+        class="t-arr-o">
+    이미지 Pull
+  </text>
+
+  <!-- 5. Private Subnet → NAT Gateway  (purple dashed, outbound traffic) -->
+  <line x1="980" y1="448" x2="980" y2="338"
+        stroke="#8C4FFF" stroke-width="2" stroke-dasharray="5,3"
+        marker-end="url(#arr-p)"/>
+  <text x="994" y="396"
+        class="t-arr-p">
+    아웃바운드
+  </text>
+
 </svg>
