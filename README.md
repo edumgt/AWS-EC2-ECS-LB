@@ -52,6 +52,10 @@ curl http://127.0.0.1:8000/health
 - [FastAPI Docker 샘플](BE-fastapi/README.md)
 - [AWS CLI 배포 샘플 3종](deploy/README.md)
 
+## 빠른 트러블슈팅
+- EC2 콘솔에서 `EC2 Instance Connect` 접속이 `Access denied`로 실패하면, `EC2/003.md`의 접속 점검 항목부터 확인합니다.
+- 특히 `TCP 22` 인바운드 허용만으로는 부족할 수 있으며, 퍼블릭 IP, IGW 라우팅, IAM 권한, 지원 AMI 여부를 함께 확인해야 합니다.
+
 ## 보안 처리 안내
 - `EC2` 폴더의 스크린샷 이미지는 민감정보 노출 방지를 위해 마스킹 처리했습니다.
 - 문서 내 ID, 계정, IP, ARN 예시는 `xxxxxxxx` 형태로 표기했습니다.
