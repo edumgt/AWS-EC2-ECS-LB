@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ops Pulse Grid</title>
+    <meta
+      name="description"
+      content="Nginx static hosting용 AG Grid 기반 운영 대시보드"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34.1.2/dist/ag-grid-community.min.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Static Ops Console</p>
+          <h1>AG Grid로 보는 서비스 배포 현황</h1>
+          <p class="hero-text">
+            번들러 없이 바로 올릴 수 있는 정적 웹앱입니다. 인스턴스 상태,
+            담당자, 배포 진행률을 빠르게 탐색하고 필터링할 수 있습니다.
+          </p>
+        </div>
+        <div class="hero-panel">
+          <div class="metric-card">
+            <span class="metric-label">Active Services</span>
+            <strong id="activeServices">0</strong>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Avg Progress</span>
+            <strong id="avgProgress">0%</strong>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Urgent Items</span>
+            <strong id="urgentItems">0</strong>
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="toolbar">
+          <label class="search-field" for="quickFilter">
+            <span>Quick Search</span>
+            <input
+              id="quickFilter"
+              type="search"
+              placeholder="서비스명, 담당자, 리전으로 검색"
+            />
+          </label>
+
+          <div class="toolbar-actions">
+            <button type="button" class="chip is-active" data-filter="all">
+              전체
+            </button>
+            <button type="button" class="chip" data-filter="healthy">
+              Healthy
+            </button>
+            <button type="button" class="chip" data-filter="warning">
+              Warning
+            </button>
+            <button type="button" class="chip" data-filter="critical">
+              Critical
+            </button>
+            <button type="button" class="ghost-button" id="resetFilters">
+              필터 초기화
+            </button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Deployment Board</p>
+              <h2>운영 서비스 목록</h2>
+            </div>
+            <div class="legend">
+              <span><i class="dot healthy"></i> Healthy</span>
+              <span><i class="dot warning"></i> Warning</span>
+              <span><i class="dot critical"></i> Critical</span>
+            </div>
+          </div>
+
+          <div id="serviceGrid" class="ag-theme-quartz grid-frame"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
